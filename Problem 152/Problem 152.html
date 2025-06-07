@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Product Subarray - Interactive Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .problem-statement {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .key-insight {
+            background: linear-gradient(135deg, #4834d4, #6c5ce7);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .visualization {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .array-element {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .array-element.current {
+            background: #3742fa;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(55, 66, 250, 0.4);
+        }
+
+        .array-element.selected {
+            background: #2ed573;
+            color: white;
+        }
+
+        .array-element.negative {
+            background: #ff3838;
+            color: white;
+        }
+
+        .array-element.zero {
+            background: #ffa502;
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3742fa, #2f3542);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #2ed573, #1e90ff);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff3838, #ff6b6b);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .complexity-box {
+            background: linear-gradient(135deg, #ffa502, #ff6348);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            padding: 0;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #3742fa;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -15px;
+            top: 15px;
+            background: #3742fa;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Maximum Product Subarray</h1>
+            <p>Master the art of dynamic programming with interactive visualizations</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showSection('theory')">📚 Theory</div>
+            <div class="tab" onclick="showSection('visualization')">🎯 Visualization</div>
+            <div class="tab" onclick="showSection('practice')">💻 Practice</div>
+            <div class="tab" onclick="showSection('reference')">📋 Quick Reference</div>
+        </div>
+
+        <div class="content">
+            <!-- Theory Section -->
+            <div id="theory" class="section active">
+                <div class="problem-statement">
+                    <h2>🎯 Problem Statement</h2>
+                    <p><strong>Given</strong> an integer array <code>nums</code>, find the contiguous subarray (of length ≥1) whose product is maximum, and return that product.</p>
+                    <br>
+                    <p><strong>Example:</strong> [2,3,-2,4] → Maximum product is 6 (subarray [2,3])</p>
+                </div>
+
+                <h3>Why Brute-Force is Too Slow</h3>
+                <div class="complexity-box">
+                    <p><strong>Brute Force Approach:</strong></p>
+                    <ul>
+                        <li>Try <strong>every</strong> subarray and multiply its elements</li>
+                        <li><strong>O(n²)</strong> subarrays × up to <strong>O(n)</strong> work each ⇒ <strong>O(n³)</strong></li>
+                        <li>With rolling products: <strong>O(n²)</strong></li>
+                        <li>For n up to 2·10⁴, this won't pass time limits!</li>
+                    </ul>
+                </div>
+
+                <div class="key-insight">
+                    <h3>🔑 Key Insight: Track Both Max & Min</h3>
+                    <p><strong>Negatives flip signs:</strong> A very negative product × a negative number can become a big positive!</p>
+                    <br>
+                    <p>So at each index you must remember both:</p>
+                    <ul>
+                        <li><strong>current_max</strong> = largest product ending here</li>
+                        <li><strong>current_min</strong> = smallest product ending here</li>
+                    </ul>
+                </div>
+
+                <h3>Zero-Handling ("Reset")</h3>
+                <p>Since ×0 = 0 kills any streak, whenever you see <code>0</code> you:</p>
+                <ol class="step-list">
+                    <li>Compare <code>result = max(result, 0)</code></li>
+                    <li>Reset <code>current_max = current_min = 1</code></li>
+                    <li>Skip ahead</li>
+                </ol>
+
+                <h3>One-Pass Update Formula</h3>
+                <p>At each number <code>n</code>:</p>
+                <ol class="step-list">
+                    <li><strong>Stash</strong> the old best × n: <code>temp = current_max * n</code></li>
+                    <li><strong>New current_max</strong> = max of three candidates: start fresh at <code>n</code>, extend old best: <code>temp</code>, extend old worst: <code>current_min * n</code></li>
+                    <li><strong>New current_min</strong> = min of those same three</li>
+                    <li><strong>Track global best:</strong> <code>result = max(result, current_max)</code></li>
+                </ol>
+            </div>
+
+            <!-- Visualization Section -->
+            <div id="visualization" class="section">
+                <h2>🎯 Interactive Visualization</h2>
+                
+                <div class="input-group">
+                    <label for="arrayInput">Enter your array (comma-separated):</label>
+                    <input type="text" id="arrayInput" placeholder="2,3,-2,4" value="2,3,-2,4">
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="initializeArray()">Initialize</button>
+                    <button class="btn btn-secondary" onclick="stepForward()">Step Forward</button>
+                    <button class="btn btn-secondary" onclick="runAll()">Run All</button>
+                    <button class="btn btn-danger" onclick="reset()">Reset</button>
+                </div>
+
+                <div class="visualization">
+                    <h3>Array Visualization</h3>
+                    <div id="arrayVisualization" class="array-container">
+                        <!-- Array elements will be populated here -->
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Current Index</div>
+                        <div class="stat-value" id="currentIndex">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Max</div>
+                        <div class="stat-value" id="currentMax">1</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Min</div>
+                        <div class="stat-value" id="currentMin">1</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Global Result</div>
+                        <div class="stat-value" id="globalResult">-</div>
+                    </div>
+                </div>
+
+                <div class="visualization">
+                    <h3>Step-by-Step Explanation</h3>
+                    <div id="stepExplanation">
+                        <p>Click "Initialize" to start the visualization.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Section -->
+            <div id="practice" class="section">
+                <h2>💻 Practice Problems</h2>
+                
+                <div class="input-group">
+                    <label for="practiceInput">Test your solution:</label>
+                    <input type="text" id="practiceInput" placeholder="Enter array: 2,3,-2,4">
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="solvePractice()">Solve</button>
+                    <button class="btn btn-secondary" onclick="generateRandom()">Random Test</button>
+                </div>
+
+                <div id="practiceResult" class="visualization" style="display: none;">
+                    <h3>Solution</h3>
+                    <div id="practiceOutput"></div>
+                </div>
+
+                <h3>Common Test Cases</h3>
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="loadTestCase('[2,3,-2,4]')">Basic Case</button>
+                    <button class="btn btn-secondary" onclick="loadTestCase('[-2,0,-1]')">With Zero</button>
+                    <button class="btn btn-secondary" onclick="loadTestCase('[-2,3,-4]')">All Negatives</button>
+                    <button class="btn btn-secondary" onclick="loadTestCase('[1,2,3,4,5]')">All Positives</button>
+                </div>
+
+                <div class="code-block">
+                    <h4>Python Implementation</h4>
+                    <pre><code>class Solution:
+    def maxProduct(self, nums):
+        # 1) Initialize result as the single largest element
+        result = max(nums)
+        current_max, current_min = 1, 1
+
+        # 2) Walk through each number
+        for n in nums:
+            if n == 0:
+                # zero resets any product streak
+                current_max, current_min = 1, 1
+                result = max(result, 0)
+                continue
+
+            # 3) Save old current_max × n before overwriting
+            temp = current_max * n
+
+            # 4) Update running best and worst
+            current_max = max(n, temp, current_min * n)
+            current_min = min(n, temp, current_min * n)
+
+            # 5) Update global result
+            result = max(result, current_max)
+
+        return result</code></pre>
+                </div>
+            </div>
+
+            <!-- Reference Section -->
+            <div id="reference" class="section">
+                <h2>📋 Quick Reference Sheet</h2>
+                
+                <div class="complexity-box">
+                    <h3>⚡ Complexity</h3>
+                    <p><strong>Time:</strong> O(n) — one pass, constant work per element</p>
+                    <p><strong>Space:</strong> O(1) — only a fixed handful of variables</p>
+                </div>
+
+                <h3>🧠 Core Concepts Learned</h3>
+                <ol class="step-list">
+                    <li><strong>Brute-Force vs. Optimization</strong> (O(n²) → O(n))</li>
+                    <li><strong>Sign-Flipping with Negatives</strong> (track both max/min)</li>
+                    <li><strong>State Compression</strong> (constant-space DP)</li>
+                    <li><strong>Zero as Reset</strong> (neutral "1" and skip)</li>
+                    <li><strong>Temporary Variable</strong> (temp) to avoid overwriting</li>
+                    <li><strong>Greedy Local Decisions</strong> aggregate to global optimum</li>
+                    <li><strong>Linear Time</strong> by one simple loop</li>
+                    <li><strong>Constant Space</strong> by only using scalars</li>
+                </ol>
+
+                <div class="key-insight">
+                    <h3>🎯 Remember This Pattern</h3>
+                    <p>This sign-flipping DP pattern appears in many problems where negative values can become beneficial. Always consider tracking both maximum and minimum when dealing with products or similar operations!</p>
+                </div>
+
+                <div class="code-block">
+                    <h4>Algorithm Template</h4>
+                    <pre><code># Initialize
+result = max(nums)
+current_max, current_min = 1, 1
+
+# Process each element
+for n in nums:
+    if n == 0:
+        current_max, current_min = 1, 1
+        result = max(result, 0)
+        continue
+    
+    temp = current_max * n
+    current_max = max(n, temp, current_min * n)
+    current_min = min(n, temp, current_min * n)
+    result = max(result, current_max)
+
+return result</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentArray = [];
+        let currentStep = -1;
+        let maxProduct = 1;
+        let minProduct = 1;
+        let globalMax = -Infinity;
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Hide all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section and tab
+            document.getElementById(sectionName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function initializeArray() {
+            const input = document.getElementById('arrayInput').value;
+            try {
+                currentArray = input.split(',').map(x => parseInt(x.trim()));
+                currentStep = -1;
+                maxProduct = 1;
+                minProduct = 1;
+                globalMax = Math.max(...currentArray);
+                
+                renderArray();
+                updateStats();
+                updateExplanation("Array initialized. Ready to start!");
+            } catch (e) {
+                alert("Please enter a valid array (e.g., 2,3,-2,4)");
+            }
+        }
+
+        function renderArray() {
+            const container = document.getElementById('arrayVisualization');
+            container.innerHTML = '';
+            
+            currentArray.forEach((num, index) => {
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.textContent = num;
+                
+                if (index === currentStep) {
+                    element.classList.add('current');
+                } else if (index < currentStep) {
+                    element.classList.add('selected');
+                }
+                
+                if (num < 0) {
+                    element.classList.add('negative');
+                } else if (num === 0) {
+                    element.classList.add('zero');
+                }
+                
+                container.appendChild(element);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('currentIndex').textContent = currentStep >= 0 ? currentStep : '-';
+            document.getElementById('currentMax').textContent = maxProduct;
+            document.getElementById('currentMin').textContent = minProduct;
+            document.getElementById('globalResult').textContent = globalMax;
+        }
+
+        function updateExplanation(message) {
+            document.getElementById('stepExplanation').innerHTML = `<p><strong>Step ${currentStep + 1}:</strong> ${message}</p>`;
+        }
+
+        function stepForward() {
+            if (currentArray.length === 0) {
+                alert("Please initialize an array first!");
+                return;
+            }
+            
+            if (currentStep >= currentArray.length - 1) {
+                updateExplanation("Algorithm completed! Maximum product found: " + globalMax);
+                return;
+            }
+            
+            currentStep++;
+            const n = currentArray[currentStep];
+            
+            if (n === 0) {
+                maxProduct = 1;
+                minProduct = 1;
+                globalMax = Math.max(globalMax, 0);
+                updateExplanation(`Found zero! Reset max and min to 1. Global max = ${globalMax}`);
+            } else {
+                const temp = maxProduct * n;
+                const newMax = Math.max(n, temp, minProduct * n);
+                const newMin = Math.min(n, temp, minProduct * n);
+                
+                maxProduct = newMax;
+                minProduct = newMin;
+                globalMax = Math.max(globalMax, maxProduct);
+                
+                updateExplanation(`Processing ${n}: temp=${temp}, new_max=${newMax}, new_min=${newMin}, global_max=${globalMax}`);
+            }
+            
+            renderArray();
+            updateStats();
+        }
+
+        function runAll() {
+            while (currentStep < currentArray.length - 1) {
+                setTimeout(() => stepForward(), currentStep * 500);
+            }
+        }
+
+        function reset() {
+            currentStep = -1;
+            maxProduct = 1;
+            minProduct = 1;
+            globalMax = currentArray.length > 0 ? Math.max(...currentArray) : -Infinity;
+            renderArray();
+            updateStats();
+            updateExplanation("Reset complete. Ready to start again!");
+        }
+
+        function solvePractice() {
+            const input = document.getElementById('practiceInput').value;
+            try {
+                const arr = input.split(',').map(x => parseInt(x.trim()));
+                const result = maxProductSubarray(arr);
+                
+                document.getElementById('practiceResult').style.display = 'block';
+                document.getElementById('practiceOutput').innerHTML = `
+                    <p><strong>Input:</strong> [${arr.join(', ')}]</p>
+                    <p><strong>Maximum Product:</strong> ${result}</p>
+                    <p><strong>Time Complexity:</strong> O(n)</p>
+                    <p><strong>Space Complexity:</strong> O(1)</p>
+                `;
+            } catch (e) {
+                alert("Please enter a valid array");
+            }
+        }
+
+        function maxProductSubarray(nums) {
+            let result = Math.max(...nums);
+            let currentMax = 1, currentMin = 1;
+
+            for (let n of nums) {
+                if (n === 0) {
+                    currentMax = currentMin = 1;
+                    result = Math.max(result, 0);
+                    continue;
+                }
+
+                let temp = currentMax * n;
+                currentMax = Math.max(n, temp, currentMin * n);
+                currentMin = Math.min(n, temp, currentMin * n);
+                result = Math.max(result, currentMax);
+            }
+
+            return result;
+        }
+
+        function generateRandom() {
+            const length = Math.floor(Math.random() * 8) + 3;
+            const arr = [];
+            for (let i = 0; i < length; i++) {
+                const num = Math.floor(Math.random() * 11) - 5; // -5 to 5
+                arr.push(num);
+            }
+            document.getElementById('practiceInput').value = arr.join(',');
+        }
+
+        function loadTestCase(testCase) {
+            document.getElementById('practiceInput').value = testCase.slice(1, -1); // Remove brackets
+        }
+
+        // Initialize with default array
+        window.onload = function() {
+            initializeArray();
+        };
+    </script>
+</body>
+</html>
