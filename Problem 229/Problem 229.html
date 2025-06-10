@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Majority Element II - Interactive Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .algorithm-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .algo-btn {
+            padding: 10px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .algo-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .run-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .visualization {
+            min-height: 300px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .array-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .array-element {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.5s ease;
+            border: 2px solid transparent;
+        }
+
+        .step-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .candidates-display {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .candidate {
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #ff9800;
+            min-width: 120px;
+        }
+
+        .result-display {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .complexity-info {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .complexity-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .explanation-section {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .explanation-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .highlight {
+            background: #ffd54f !important;
+            border-color: #ff9800 !important;
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .algorithm-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Majority Element II</h1>
+            <p>Find elements appearing more than ⌊n/3⌋ times - Interactive Visualization</p>
+        </div>
+
+        <div class="main-content">
+            <div class="panel">
+                <h3>🎮 Interactive Controls</h3>
+                <div class="controls">
+                    <div class="input-group">
+                        <label for="arrayInput">Enter Array (comma-separated):</label>
+                        <input type="text" id="arrayInput" placeholder="e.g., 1,2,3,1,2,1" value="1,2,3,1,2,1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Choose Algorithm:</label>
+                        <div class="algorithm-selector">
+                            <button class="algo-btn active" data-algo="boyer-moore">Boyer-Moore</button>
+                            <button class="algo-btn" data-algo="counting">Counting</button>
+                            <button class="algo-btn" data-algo="pruning">Dict Pruning</button>
+                        </div>
+                    </div>
+                    
+                    <button class="run-btn" onclick="runVisualization()">🚀 Run Visualization</button>
+                </div>
+
+                <div class="complexity-info">
+                    <h4>📊 Current Algorithm Complexity</h4>
+                    <div id="complexityDisplay">
+                        <div class="complexity-item">
+                            <span>Time Complexity:</span>
+                            <span id="timeComplexity">O(n)</span>
+                        </div>
+                        <div class="complexity-item">
+                            <span>Space Complexity:</span>
+                            <span id="spaceComplexity">O(1)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>🎬 Live Visualization</h3>
+                <div class="visualization">
+                    <div id="arrayDisplay" class="array-display"></div>
+                    <div id="stepInfo" class="step-info">Click "Run Visualization" to start!</div>
+                    <div id="candidatesDisplay" class="candidates-display"></div>
+                    <div id="resultDisplay" class="result-display" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="explanation-section">
+            <h3>📚 Comprehensive Explanation</h3>
+            <div class="explanation-tabs">
+                <button class="tab-btn active" onclick="showTab('problem')">Problem</button>
+                <button class="tab-btn" onclick="showTab('algorithms')">Algorithms</button>
+                <button class="tab-btn" onclick="showTab('complexity')">Complexity</button>
+                <button class="tab-btn" onclick="showTab('examples')">Examples</button>
+            </div>
+
+            <div id="problem" class="tab-content active">
+                <h4>🎯 Problem Statement</h4>
+                <p><strong>Goal:</strong> Find all distinct elements in an array that appear <strong>strictly more than</strong> ⌊n/3⌋ times.</p>
+                
+                <h4>🧮 Key Insights</h4>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li><strong>Threshold:</strong> For array length n, threshold = n ÷ 3</li>
+                    <li><strong>Maximum Results:</strong> At most 2 elements can satisfy this condition</li>
+                    <li><strong>Pigeonhole Principle:</strong> If 3+ elements each appear > n/3 times, total would exceed n</li>
+                </ul>
+
+                <div class="code-block">threshold = len(nums) // 3
+# At most 2 elements can appear > threshold times</div>
+            </div>
+
+            <div id="algorithms" class="tab-content">
+                <h4>🔧 Three Main Approaches</h4>
+                
+                <h5>1. Boyer-Moore Generalization (Optimal)</h5>
+                <p>Maintains two candidate slots, using vote cancellation principle.</p>
+                <div class="code-block">def majorityElement(nums):<br>
+                    # At most 2 elements can appear > n/3 times<br>
+                    n = len(nums)<br>
+                    threshold = n // 3<br>
+                
+                    # 1 First pass: find up to two candidates<br>
+                    cand1 = cand2 = None<br>
+                    cnt1 = cnt2 = 0<br>
+                
+                    for x in nums:<br>
+                        if x == cand1:<br>
+                            cnt1 += 1<br>
+                        elif x == cand2:<br>
+                            cnt2 += 1<br>
+                        elif cnt1 == 0:<br>
+                            cand1, cnt1 = x, 1<br>
+                        elif cnt2 == 0:<br>
+                            cand2, cnt2 = x, 1<br>
+                        else:<br>
+                            cnt1 -= 1<br>
+                            cnt2 -= 1<br>
+                
+                    # 2 Second pass: verify actual counts<br>
+                    cnt1 = cnt2 = 0<br>
+                    for x in nums:<br>
+                        if x == cand1:<br>
+                            cnt1 += 1<br>
+                        elif x == cand2:<br>
+                            cnt2 += 1<br>
+                
+                    result = []<br>
+                    if cnt1 > threshold:<br>
+                        result.append(cand1)<br>
+                    if cnt2 > threshold:<br>
+                        result.append(cand2)<br>
+                
+                    return result<br>
+                </div>
+
+                <h5>2. Simple Counting</h5>
+                <p>Use Counter to count all elements, then filter.</p>
+                <div class="code-block">from collections import Counter<br>
+
+                    def majorityElement(nums):<br>
+                        threshold = len(nums) // 3<br>
+                        counts = Counter(nums) # O(n) time & space <br>
+                        return [x for x,c in counts.items() <br>
+                                if c > threshold]<br></div>
+
+                <h5>3. Dictionary Pruning</h5>
+                <p>Maintain small dictionary, prune when it grows too large.</p>
+                <div class="code-block">class Solution(object):<br>
+                    def majorityElement(self, nums):<br>
+                        count = defaultdict(int)<br>
+                
+                        for n in nums:<br>
+                            count[n] += 1<br>
+                
+                            if len(count) <= 2:<br>
+                                continue<br>
+                            new_count = defaultdict(int)<br>
+                            for key, c in count.items():<br>
+                                if c > 1:<br>
+                                    new_count[key] = c - 1<br>
+                            count = new_count<br>
+                        
+                        result = []<br>
+                
+                        threshold = len(nums) // 3<br>
+                        for cand in count:<br>
+                            if nums.count(cand) > threshold:<br>
+                                result.append(cand)<br>
+                    
+                        return result<br></div>
+            </div>
+
+            <div id="complexity" class="tab-content">
+                <h4>⚡ Time & Space Complexity Analysis</h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;">
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
+                        <h5>Boyer-Moore Approach</h5>
+                        <p><strong>Time:</strong> O(n) - Two passes through array</p>
+                        <p><strong>Space:</strong> O(1) - Only stores 4 variables</p>
+                        <p><strong>Best for:</strong> Memory-constrained environments</p>
+                    </div>
+                    
+                    <div style="background: #fff3e0; padding: 15px; border-radius: 8px;">
+                        <h5>Simple Counting</h5>
+                        <p><strong>Time:</strong> O(n) - Single pass + filter</p>
+                        <p><strong>Space:</strong> O(k) - k unique elements</p>
+                        <p><strong>Best for:</strong> Simplicity and readability</p>
+                    </div>
+                    
+                    <div style="background: #e8f5e8; padding: 15px; border-radius: 8px;">
+                        <h5>Dictionary Pruning</h5>
+                        <p><strong>Time:</strong> O(n) - Single pass with pruning</p>
+                        <p><strong>Space:</strong> O(1) - Dict size ≤ 3</p>
+                        <p><strong>Best for:</strong> Understanding vote cancellation</p>
+                    </div>
+                </div>
+
+                <h4>📈 Detailed Complexity Breakdown</h4>
+                <div class="code-block"># Boyer-Moore: Why O(1) space?
+# - Only 4 variables: cand1, cand2, cnt1, cnt2
+# - No data structures that grow with input size
+
+# Counting: Why O(k) space?
+# - Counter stores all unique elements
+# - In worst case, k = n (all elements unique)
+
+# Pruning: Why O(1) space?
+# - Dictionary never exceeds size 3
+# - Pruning keeps it bounded</div>
+            </div>
+
+            <div id="examples" class="tab-content">
+                <h4>💡 Worked Examples</h4>
+                
+                <h5>Example 1: [1,2,3,1,2,1]</h5>
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <p><strong>n = 6, threshold = 2</strong></p>
+                    <p><strong>Counts:</strong> 1 appears 3 times, 2 appears 2 times, 3 appears 1 time</p>
+                    <p><strong>Result:</strong> [1] (only 1 appears > 2 times)</p>
+                </div>
+
+                <h5>Example 2: [1,1,2,2,3,3]</h5>
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <p><strong>n = 6, threshold = 2</strong></p>
+                    <p><strong>Counts:</strong> All elements appear exactly 2 times</p>
+                    <p><strong>Result:</strong> [] (no element appears > 2 times)</p>
+                </div>
+
+                <h5>Example 3: [1,1,1,2,2,3]</h5>
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <p><strong>n = 6, threshold = 2</strong></p>
+                    <p><strong>Counts:</strong> 1 appears 3 times, 2 appears 2 times, 3 appears 1 time</p>
+                    <p><strong>Result:</strong> [1] (only 1 appears > 2 times)</p>
+                </div>
+
+                <h4>🎭 Edge Cases</h4>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li><strong>Empty array:</strong> Return []</li>
+                    <li><strong>Single element:</strong> Return [element] (1 > 0)</li>
+                    <li><strong>Two elements:</strong> Both appear > 0 times, return both</li>
+                    <li><strong>All same elements:</strong> Return [element]</li>
+                    <li><strong>No majority:</strong> Return []</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAlgorithm = 'boyer-moore';
+        let currentStep = 0;
+        let isRunning = false;
+
+        // Algorithm selection
+        document.querySelectorAll('.algo-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentAlgorithm = this.dataset.algo;
+                updateComplexityDisplay();
+            });
+        });
+
+        function updateComplexityDisplay() {
+            const timeEl = document.getElementById('timeComplexity');
+            const spaceEl = document.getElementById('spaceComplexity');
+            
+            switch(currentAlgorithm) {
+                case 'boyer-moore':
+                    timeEl.textContent = 'O(n)';
+                    spaceEl.textContent = 'O(1)';
+                    break;
+                case 'counting':
+                    timeEl.textContent = 'O(n)';
+                    spaceEl.textContent = 'O(k)';
+                    break;
+                case 'pruning':
+                    timeEl.textContent = 'O(n)';
+                    spaceEl.textContent = 'O(1)';
+                    break;
+            }
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function getRandomColor() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function displayArray(nums, highlighted = []) {
+            const arrayDisplay = document.getElementById('arrayDisplay');
+            const colorMap = new Map();
+            
+            arrayDisplay.innerHTML = nums.map((num, index) => {
+                if (!colorMap.has(num)) {
+                    colorMap.set(num, getRandomColor());
+                }
+                
+                const isHighlighted = highlighted.includes(index);
+                return `<div class="array-element ${isHighlighted ? 'highlight' : ''}" 
+                            style="background-color: ${colorMap.get(num)}">
+                            ${num}
+                        </div>`;
+            }).join('');
+        }
+
+        function updateStepInfo(text) {
+            document.getElementById('stepInfo').innerHTML = text;
+        }
+
+        function updateCandidates(candidates) {
+            const candidatesDisplay = document.getElementById('candidatesDisplay');
+            if (candidates && candidates.length > 0) {
+                candidatesDisplay.innerHTML = candidates.map(c => 
+                    `<div class="candidate">
+                        <div style="font-size: 20px; margin-bottom: 5px;">${c.value || 'None'}</div>
+                        <div style="font-size: 14px;">Count: ${c.count}</div>
+                    </div>`
+                ).join('');
+                candidatesDisplay.style.display = 'flex';
+            } else {
+                candidatesDisplay.style.display = 'none';
+            }
+        }
+
+        function showResult(result, threshold) {
+            const resultDisplay = document.getElementById('resultDisplay');
+            resultDisplay.innerHTML = `
+                <div>🎉 <strong>Result:</strong> [${result.join(', ')}]</div>
+                <div style="margin-top: 10px; font-size: 14px;">
+                    Threshold: ${threshold} | Found ${result.length} element(s)
+                </div>
+            `;
+            resultDisplay.style.display = 'block';
+        }
+
+        async function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function runBoyerMoore(nums) {
+            const n = nums.length;
+            const threshold = Math.floor(n / 3);
+            
+            let cand1 = null, cand2 = null;
+            let cnt1 = 0, cnt2 = 0;
+            
+            updateStepInfo(`🔍 <strong>Boyer-Moore Algorithm</strong><br>
+                          Array length: ${n}, Threshold: ${threshold}<br>
+                          Phase 1: Finding candidates using vote cancellation`);
+            
+            // Phase 1: Find candidates
+            for (let i = 0; i < nums.length; i++) {
+                const x = nums[i];
+                displayArray(nums, [i]);
+                
+                if (x === cand1) {
+                    cnt1++;
+                    updateStepInfo(`Step ${i+1}: Element ${x} matches candidate 1, incrementing count`);
+                } else if (x === cand2) {
+                    cnt2++;
+                    updateStepInfo(`Step ${i+1}: Element ${x} matches candidate 2, incrementing count`);
+                } else if (cnt1 === 0) {
+                    cand1 = x;
+                    cnt1 = 1;
+                    updateStepInfo(`Step ${i+1}: Setting candidate 1 to ${x}`);
+                } else if (cnt2 === 0) {
+                    cand2 = x;
+                    cnt2 = 1;
+                    updateStepInfo(`Step ${i+1}: Setting candidate 2 to ${x}`);
+                } else {
+                    cnt1--;
+                    cnt2--;
+                    updateStepInfo(`Step ${i+1}: Vote cancellation! Decrementing both counts`);
+                }
+                
+                updateCandidates([
+                    {value: cand1, count: cnt1},
+                    {value: cand2, count: cnt2}
+                ]);
+                
+                await sleep(800);
+            }
+            
+            // Phase 2: Verify candidates
+            updateStepInfo(`🔍 Phase 2: Verifying candidates by counting actual frequencies`);
+            await sleep(1000);
+            
+            cnt1 = cnt2 = 0;
+            for (const x of nums) {
+                if (x === cand1) cnt1++;
+                else if (x === cand2) cnt2++;
+            }
+            
+            const result = [];
+            if (cnt1 > threshold) result.push(cand1);
+            if (cnt2 > threshold) result.push(cand2);
+            
+            updateStepInfo(`✅ Verification complete:<br>
+                          Candidate 1 (${cand1}): ${cnt1} occurrences ${cnt1 > threshold ? '✓' : '✗'}<br>
+                          Candidate 2 (${cand2}): ${cnt2} occurrences ${cnt2 > threshold ? '✓' : '✗'}`);
+            
+            showResult(result, threshold);
+        }
+
+        async function runCounting(nums) {
+            const threshold = Math.floor(nums.length / 3);
+            
+            updateStepInfo(`📊 <strong>Simple Counting Algorithm</strong><br>
+                          Counting frequency of each element...`);
+            
+            const counts = new Map();
+            
+            for (let i = 0; i < nums.length; i++) {
+                displayArray(nums, [i]);
+                const num = nums[i];
+                counts.set(num, (counts.get(num) || 0) + 1);
+                
+                updateStepInfo(`Step ${i+1}: Counting element ${num}<br>
+                              Current counts: ${Array.from(counts.entries()).map(([k,v]) => `${k}:${v}`).join(', ')}`);
+                
+                await sleep(600);
+            }
+            
+            const result = Array.from(counts.entries())
+                .filter(([num, count]) => count > threshold)
+                .map(([num, count]) => num);
+            
+            updateStepInfo(`✅ Filtering complete:<br>
+                          ${Array.from(counts.entries()).map(([k,v]) => 
+                            `${k}: ${v} occurrences ${v > threshold ? '✓' : '✗'}`
+                          ).join('<br>')}`);
+            
+            showResult(result, threshold);
+        }
+
+        async function runPruning(nums) {
+            const threshold = Math.floor(nums.length / 3);
+            const count = new Map();
+            
+            updateStepInfo(`✂️ <strong>Dictionary Pruning Algorithm</strong><br>
+                          Maintaining dictionary of size ≤ 3 with pruning`);
+            
+            for (let i = 0; i < nums.length; i++) {
+                displayArray(nums, [i]);
+                const n = nums[i];
+                count.set(n, (count.get(n) || 0) + 1);
+                
+                updateStepInfo(`Step ${i+1}: Added ${n}<br>
+                              Dictionary: ${Array.from(count.entries()).map(([k,v]) => `${k}:${v}`).join(', ')}<br>
+                              Size: ${count.size}`);
+                
+                if (count.size > 2) {
+                    const newCount = new Map();
+                    for (const [key, c] of count.entries()) {
+                        if (c > 1) {
+                            newCount.set(key, c - 1);
+                        }
+                    }
+                    count.clear();
+                    for (const [key, val] of newCount.entries()) {
+                        count.set(key, val);
+                    }
+                    
+                    updateStepInfo(`Step ${i+1}: Pruning applied!<br>
+                                  New dictionary: ${Array.from(count.entries()).map(([k,v]) => `${k}:${v}`).join(', ')}`);
+                }
+                
+                await sleep(800);
+            }
+            
+            // Verify candidates
+            updateStepInfo(`🔍 Verifying remaining candidates...`);
+            await sleep(500);
+            
+            const result = [];
+            for (const cand of count.keys()) {
+                const actualCount = nums.filter(x => x === cand).length;
+                if (actualCount > threshold) {
+                    result.push(cand);
+                }
+            }
+            
+            showResult(result, threshold);
+        }
+
+        async function runVisualization() {
+            if (isRunning) return;
+            
+            const input = document.getElementById('arrayInput').value.trim();
+            if (!input) {
+                alert('Please enter an array!');
+                return;
+            }
+            
+            try {
+                const nums = input.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+                if (nums.length === 0) {
+                    alert('Please enter valid numbers!');
+                    return;
+                }
+                
+                isRunning = true;
+                document.getElementById('resultDisplay').style.display = 'none';
+                updateCandidates([]);
+                
+                displayArray(nums);
+                
+                switch(currentAlgorithm) {
+                    case 'boyer-moore':
+                        await runBoyerMoore(nums);
+                        break;
+                    case 'counting':
+                        await runCounting(nums);
+                        break;
+                    case 'pruning':
+                        await runPruning(nums);
+                        break;
+                }
+                
+                isRunning = false;
+            } catch (error) {
+                alert('Error parsing input. Please enter comma-separated numbers.');
+                isRunning = false;
+            }
+        }
+
+        // Initialize
+        updateComplexityDisplay();
+        displayArray([1,2,3,1,2,1]);
+    </script>
+</body>
+</html>
